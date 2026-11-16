@@ -1,8 +1,8 @@
 # OPENOP — Phase 1 Implementation Plan
 
 > **Phase:** 1 — Repository and development foundation
-> **Status:** Decisions D1–D9 approved 2026-11-16 (§10). Implementation
-> still needs explicit authorization, and D1 needs the GitHub username.
+> **Status:** Implemented 2026-11-16 (steps 1.1–1.7). Awaiting owner
+> review. CI and an API 31 device check are still pending (see §13).
 > **Date:** 2026-11-16
 > **Scope source:** `CLAUDE.md` §10 (Phase 1) and §17
 
@@ -425,6 +425,7 @@ Phase 9**, but anything doubtful is flagged here.
 | JNA (`net.java.dev.jna:jna`, AAR) | UniFFI runtime | Apache-2.0 / LGPL-2.1 (dual) | Runtime | Contains a prebuilt `.so` — check in audit (D7) |
 | cargo-ndk | Cross-compiling Rust | MIT / Apache-2.0 | Build tool (installed, not shipped) | Used by other F-Droid apps |
 | ktlint (if D5) | Formatting | MIT | Build | Build-only |
+| kotlinx-coroutines (transitive via Compose) | Off-main-thread core call | Apache-2.0 | Runtime | Standard |
 | JUnit 4 | Unit tests | EPL-1.0 | Test-only | Not shipped |
 | AndroidX Test, Compose UI Test | Instrumented tests | Apache-2.0 | Test-only | Not shipped |
 
@@ -519,25 +520,40 @@ profile the owner gave), to be confirmed before step 1.3.
 
 From CLAUDE.md §10, made concrete:
 
-- [ ] A clean checkout builds with only the steps in
-      `docs/development.md` (checked on a fresh environment or
-      container).
-- [ ] The debug APK installs and launches on an API 31 emulator and on
-      a recent-API emulator.
-- [ ] The placeholder screen shows the Rust core version obtained
-      through UniFFI.
-- [ ] A Rust error reaches Kotlin as a handled error, not a crash
-      (instrumented test).
-- [ ] The release APK contains only `arm64-v8a` native libraries, and
-      they are 16 KB-aligned.
-- [ ] `cargo fmt`, `clippy`, `cargo test`, Android Lint, unit tests and
-      instrumented tests all pass, and they were actually run.
-- [ ] CI workflow runs the agreed checks. Fully verifying it needs the
-      GitHub repository, which is the owner's action.
-- [ ] No permissions in the manifest; no network access.
-- [ ] Every Phase 1 dependency is listed with its licence (§11).
-- [ ] Every toolchain version is pinned and recorded with the date it
-      was checked.
+Status 2026-11-16:
+
+- [x] A clean checkout builds with only the steps in
+      `docs/development.md`. Checked with a fresh `git clone` and an
+      **empty Gradle user home**: every dependency downloaded and
+      verified, the build passed, and the native checks passed.
+      *Limit:* the same machine's SDK, NDK, rustup and cargo-ndk were
+      reused, so the one-time setup steps in §2 of the guide weren't
+      re-run from zero. The first attempt also found missing checksums,
+      now fixed (`de4c8d7`).
+- [~] The debug APK installs and launches on a device. Verified on the
+      owner's **phone (Android 16 / API 36, arm64)**. **Not** verified
+      on an API 31 device or emulator yet; the CI `instrumented` job
+      (API 31 + 37.0 emulators) covers this once the repository is on
+      GitHub.
+- [x] The placeholder screen shows the Rust core version obtained
+      through UniFFI. Debug UI test on the phone, plus the release build
+      checked by hand on the phone.
+- [x] A Rust error reaches Kotlin as a handled error, not a crash
+      (`emptyInputBecomesHandledError`, passed on the phone).
+- [x] The release APK contains only `arm64-v8a` native libraries, and
+      they are 16 KB-aligned (`scripts/check-native-libs.sh`,
+      `zipalign -P 16`).
+- [x] `cargo fmt`, `clippy`, `cargo test` (8), Android Lint
+      (debug + release), ktlint, unit tests (1) and instrumented tests
+      (app 2/2, core-bridge 3/3 on the phone) all pass, and were all
+      actually run.
+- [~] CI workflow written and its scripts tested locally. **It has not
+      run on GitHub yet.** That needs the owner to create the repository
+      and push.
+- [x] No permissions in the manifest; no network code.
+- [x] Every Phase 1 dependency is listed with its licence (§11).
+- [x] Every toolchain version is pinned and recorded with the date it
+      was checked (§12.1, `libs.versions.toml`, `rust-toolchain.toml`).
 
 ------------------------------------------------------------------------
 

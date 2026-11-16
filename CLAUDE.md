@@ -901,7 +901,7 @@ Exit criteria:
 
 ## Phase 1 --- Repository and development foundation
 
-**Status: Planned --- not started**
+**Status: Implemented --- awaiting owner review (see docs/phase-1-plan.md §13)**
 
 Objectives:
 
@@ -1481,11 +1481,13 @@ changes require a separate explicit instruction from the project owner.
 
   Architecture                        Approved
 
-  Phase 1 implementation plan         docs/phase-1-plan.md; decisions
-                                      approved; implementation awaiting
-                                      authorization
+  Phase 1 (foundation)                Implemented; awaiting owner
+                                      review. CI not yet run on GitHub;
+                                      API 31 device check pending
+                                      (docs/phase-1-plan.md §13)
 
-  Implementation                      Not started
+  Implementation                      Phase 1 done; Phase 2 not
+                                      authorized
 
   Release                             Not started
   -----------------------------------------------------------------------
