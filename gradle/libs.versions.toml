@@ -11,6 +11,9 @@ core-ktx = "1.19.1"
 junit4 = "4.13.2"
 androidx-test-ext-junit = "1.3.0"
 androidx-test-runner = "1.7.0"
+# Pinned: Compose UI Test pulls in espresso-core 3.5.0, which fails on API 37
+# (NoSuchMethodException: InputManager.getInstance).
+espresso = "3.7.0"
 ktlint-gradle = "14.2.0"
 ktlint-engine = "1.8.0"
 jna = "5.19.1"
@@ -34,6 +37,7 @@ compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 junit4 = { module = "junit:junit", version.ref = "junit4" }
 androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-test-ext-junit" }
 androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidx-test-runner" }
+androidx-test-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso" }
 
 jna = { module = "net.java.dev.jna:jna", version.ref = "jna" }
 
