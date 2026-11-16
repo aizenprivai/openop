@@ -463,6 +463,14 @@ project owner (what changed, what was run, what passed or failed).
 
 | 1.4 | ✅ Done, tested on device | `:core-bridge` library module: Gradle tasks run cargo-ndk (arm64-v8a + x86_64 debug, arm64-v8a release) and the version-locked UniFFI bindgen (`--no-format`, output in `build/`, not committed). Bindings package `io.github.aizenprivai.openop.core.ffi` set in `uniffi.toml`. JNA 5.19.1 (AAR). `CoreBridge` facade returns `Result`, maps errors to `CoreBridgeException`. Placeholder screen shows the Rust core version, loaded off the main thread. App `abiFilters` = arm64-v8a, x86_64. **Verified:** `assembleDebug`, `lintDebug`, `ktlintCheck`; host unit test (1/1); on the owner's phone (Xiaomi 25069PTEBG, Android 16 / API 36, arm64): app UI tests 2/2 and bridge tests 3/3 passed. `libopenop_ffi.so` and `libjnidispatch.so` both 16 KB-aligned; no absolute build paths in `libopenop_ffi.so`. |
 
+| 1.5 | ✅ Done, tested on device | `AppLog` (`OPENOP/<area>` tags; debug/info only in debug builds; rule: no user content). Release: R8 minify + resource shrinking; `abiFilters` arm64-v8a only (debug: arm64-v8a + x86_64); JNA/UniFFI keep rules in `core-bridge/consumer-rules.pro`; optional signing from untracked `keystore.properties`, otherwise unsigned. App sets `ndkVersion` so AGP strips bundled libraries. **Verified:** `assembleRelease`, `assembleDebug`, `lintRelease`, `lintDebug`, `ktlintCheck`, host unit tests pass. Release APK 1.9 MB, arm64-v8a only, all `.so` stripped and 16 KB-aligned, `zipalign -P 16` OK. A copy signed with the local debug key (test only) installed and launched on the owner's phone and showed "Rust core 0.1.0 (release)" with no errors in logcat; then uninstalled. |
+
+Decisions made during 1.5:
+
+- Lint's `ChromeOsAbiSupport` check is disabled because it conflicts
+  with approved decision D3 (arm64-only release). Supporting ChromeOS
+  x86_64 would need a new ABI decision.
+
 Findings from 1.4:
 
 - **AGP's test runner reports `BUILD SUCCESSFUL` when an APK fails to

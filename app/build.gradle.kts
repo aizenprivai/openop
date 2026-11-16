@@ -1,12 +1,24 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ktlint)
 }
 
+// Release signing comes from an untracked keystore.properties at the repo root
+// (keys: storeFile, storePassword, keyAlias, keyPassword). Without it, the
+// release APK is built unsigned. Keys and passwords are never committed.
+val keystoreProperties =
+    rootProject.file("keystore.properties").takeIf { it.isFile }?.let { file ->
+        Properties().apply { file.inputStream().use(::load) }
+    }
+
 android {
     namespace = "io.github.aizenprivai.openop"
     compileSdk = libs.versions.compile.sdk.get().toInt()
+    // Lets AGP strip debug symbols from bundled native libraries.
+    ndkVersion = libs.versions.ndk.get()
 
     defaultConfig {
         applicationId = "io.github.aizenprivai.openop"
@@ -16,21 +28,38 @@ android {
         versionName = "0.1.0-dev"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
 
-        // Only ABIs OPENOP supports (decision D3). Drops other ABIs bundled in
-        // dependencies such as JNA. Release narrows this to arm64-v8a in step 1.5.
-        ndk {
-            abiFilters += listOf("arm64-v8a", "x86_64")
+    signingConfigs {
+        if (keystoreProperties != null) {
+            create("release") {
+                storeFile = rootProject.file(keystoreProperties.getProperty("storeFile"))
+                storePassword = keystoreProperties.getProperty("storePassword")
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+            }
         }
     }
 
     buildTypes {
+        // ABI filters (decision D3) also drop ABIs bundled in dependencies such as JNA.
         debug {
             applicationIdSuffix = ".debug"
+            ndk {
+                abiFilters += listOf("arm64-v8a", "x86_64")
+            }
         }
         release {
-            // R8, keep rules and signing are configured in step 1.5.
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            ndk {
+                abiFilters += listOf("arm64-v8a")
+            }
+            signingConfig = signingConfigs.findByName("release")
         }
     }
 
@@ -41,6 +70,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     lint {
@@ -49,6 +79,9 @@ android {
         // App icon is an open branding decision (CLAUDE.md §2.1).
         // Re-enable this check when the icon is approved.
         disable += "MissingApplicationIcon"
+        // Release is arm64-v8a only by approved decision D3 (docs/phase-1-plan.md).
+        // ChromeOS x86_64 support would need a new ABI decision.
+        disable += "ChromeOsAbiSupport"
     }
 }
 

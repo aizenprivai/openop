@@ -18,11 +18,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.github.aizenprivai.openop.R
 import io.github.aizenprivai.openop.core.CoreBridge
 import io.github.aizenprivai.openop.core.CoreInfo
+import io.github.aizenprivai.openop.log.AppLog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -47,7 +49,10 @@ fun PlaceholderScreen() {
         value = withContext(Dispatchers.Default) {
             CoreBridge.coreInfo().fold(
                 onSuccess = { CoreStatus.Ready(it) },
-                onFailure = { CoreStatus.Failed }
+                onFailure = { error ->
+                    AppLog.e("core", "Rust core call failed", error)
+                    CoreStatus.Failed
+                }
             )
         }
     }
@@ -81,7 +86,8 @@ fun PlaceholderContent(status: CoreStatus) {
                 )
                 Text(
                     text = stringResource(R.string.placeholder_body),
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Center
                 )
                 Text(
                     text = coreStatusText(status),

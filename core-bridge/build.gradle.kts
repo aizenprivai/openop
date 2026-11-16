@@ -143,6 +143,7 @@ android {
     defaultConfig {
         minSdk = libs.versions.min.sdk.get().toInt()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
         // Lets instrumented tests check the version that came through the bridge.
         buildConfigField("String", "EXPECTED_CORE_VERSION", "\"$rustCoreVersion\"")
     }
