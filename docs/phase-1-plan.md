@@ -1,8 +1,8 @@
 # OPENOP — Phase 1 Implementation Plan
 
 > **Phase:** 1 — Repository and development foundation
-> **Status:** Implemented 2026-11-16 (steps 1.1–1.7). Awaiting owner
-> review. CI and an API 31 device check are still pending (see §13).
+> **Status:** Complete 2026-11-16. All acceptance criteria met (§13);
+> CI green on GitHub. Awaiting owner review before Phase 2.
 > **Date:** 2026-11-16
 > **Scope source:** `CLAUDE.md` §10 (Phase 1) and §17
 
@@ -427,6 +427,7 @@ Phase 9**, but anything doubtful is flagged here.
 | ktlint (if D5) | Formatting | MIT | Build | Build-only |
 | kotlinx-coroutines (transitive via Compose) | Off-main-thread core call | Apache-2.0 | Runtime | Standard |
 | JUnit 4 | Unit tests | EPL-1.0 | Test-only | Not shipped |
+| Espresso core 3.7.0 (pinned over 3.5.0 pulled in by Compose UI Test) | Instrumented tests on API 37 | Apache-2.0 | Test-only | Not shipped |
 | AndroidX Test, Compose UI Test | Instrumented tests | Apache-2.0 | Test-only | Not shipped |
 
 No network access, analytics, Google Play Services or proprietary SDKs
@@ -530,11 +531,10 @@ Status 2026-11-16:
       reused, so the one-time setup steps in §2 of the guide weren't
       re-run from zero. The first attempt also found missing checksums,
       now fixed (`de4c8d7`).
-- [~] The debug APK installs and launches on a device. Verified on the
-      owner's **phone (Android 16 / API 36, arm64)**. **Not** verified
-      on an API 31 device or emulator yet; the CI `instrumented` job
-      (API 31 + 37.0 emulators) covers this once the repository is on
-      GitHub.
+- [x] The debug APK installs and launches on a device. Verified on the
+      owner's **phone (Android 16 / API 36, arm64)** and in CI on
+      **x86_64 emulators for API 31 and API 37.0**: app 2/2 and
+      core-bridge 3/3 on each.
 - [x] The placeholder screen shows the Rust core version obtained
       through UniFFI. Debug UI test on the phone, plus the release build
       checked by hand on the phone.
@@ -547,9 +547,12 @@ Status 2026-11-16:
       (debug + release), ktlint, unit tests (1) and instrumented tests
       (app 2/2, core-bridge 3/3 on the phone) all pass, and were all
       actually run.
-- [~] CI workflow written and its scripts tested locally. **It has not
-      run on GitHub yet.** That needs the owner to create the repository
-      and push.
+- [x] CI runs the agreed checks on GitHub
+      (github.com/aizenprivai/openop). The first green run was at
+      `83fd8de`, with all 4 jobs passing. Getting there took two fixes:
+      the SDK license step failed on SIGPIPE (`2955b4c`), and the Compose
+      UI tests failed on API 37 because of the old Espresso 3.5.0 pulled
+      in indirectly; Espresso is now pinned to 3.7.0 (`83fd8de`).
 - [x] No permissions in the manifest; no network code.
 - [x] Every Phase 1 dependency is listed with its licence (§11).
 - [x] Every toolchain version is pinned and recorded with the date it
