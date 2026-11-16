@@ -1,0 +1,6 @@
+[toolchain]
+# Latest stable, verified 2026-11-16. Bump deliberately.
+channel = "1.100.0"
+components = ["rustfmt", "clippy"]
+targets = ["aarch64-linux-android", "x86_64-linux-android"]
+profile = "minimal"

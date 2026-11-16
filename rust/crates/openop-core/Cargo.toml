@@ -1,0 +1,13 @@
+[package]
+name = "openop-core"
+description = "OPENOP shared domain logic (no FFI types)."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+thiserror.workspace = true
+
+[lints]
+workspace = true

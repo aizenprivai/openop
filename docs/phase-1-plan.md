@@ -455,9 +455,22 @@ project owner (what changed, what was run, what passed or failed).
 
 | # | State | Notes |
 |---|---|---|
-| 1.1 | Files created; first commit waiting on git author identity | `git init -b main`, `.gitignore`, `.gitattributes`, `.editorconfig`, `LICENSE` (copied from the system's Apache-2.0 text, SHA-256 `cfc7749b…3d30`), `README.md`, `CONTRIBUTING.md` |
-| 1.2 | Not started | Rust 1.100.0 already installed locally |
-| 1.3+ | Blocked | No JDK, Android SDK, NDK or cargo-ndk installed on the development machine |
+| 1.1 | ✅ Committed (`d063b91`) | `git init -b main`, `.gitignore`, `.gitattributes`, `.editorconfig`, `LICENSE` (copied from the system's Apache-2.0 text, SHA-256 `cfc7749b…3d30`), `README.md`, `CONTRIBUTING.md`. Repo-local git identity set. |
+| 1.2 | ✅ Done | Rust 1.100.0 pinned; UniFFI `=0.32.2`, thiserror 2.0.21 (checked on crates.io 2026-11-16). On host: `cargo fmt --check`, `clippy -D warnings` and `cargo test` pass (8 tests); release build OK; Kotlin bindings generate from the `.so` (`CoreInfo`, `CoreException.InvalidInput`, `coreInfo()`, `echoValidated()`; 25 JNA references, as expected). |
+| 1.3+ | Blocked | No JDK, Android SDK, NDK or cargo-ndk on the development machine |
+
+Notes for step 1.4:
+
+- Generated bindings default to package `uniffi.openop_ffi`. Set the
+  package from the app ID in `rust/crates/openop-ffi/uniffi.toml`.
+- Pass `--no-format` to the bindgen task. Otherwise it tries to run a
+  ktlint executable that isn't there; ktlint runs as a Gradle check
+  instead.
+- The Android targets (`aarch64-linux-android`, `x86_64-linux-android`)
+  were installed automatically through `rust-toolchain.toml`.
+
+D1 application ID: `io.github.aizenprivai.openop` (from the GitHub
+profile the owner gave), to be confirmed before step 1.3.
 
 ## 13. Acceptance criteria (Phase 1 exit)
 

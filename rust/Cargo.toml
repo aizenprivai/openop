@@ -1,0 +1,29 @@
+[workspace]
+resolver = "3"
+members = [
+  "crates/openop-core",
+  "crates/openop-ffi",
+  "uniffi-bindgen",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
+publish = false
+
+[workspace.dependencies]
+openop-core = { path = "crates/openop-core" }
+# Exact pin: the bindgen binary must match the runtime crate version.
+uniffi = "=0.32.2"
+thiserror = "2.0.21"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = "symbols"
+# UniFFI catches panics at the boundary and reports them to Kotlin.
+panic = "unwind"
