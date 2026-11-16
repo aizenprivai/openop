@@ -457,7 +457,11 @@ project owner (what changed, what was run, what passed or failed).
 |---|---|---|
 | 1.1 | ✅ Committed (`d063b91`) | `git init -b main`, `.gitignore`, `.gitattributes`, `.editorconfig`, `LICENSE` (copied from the system's Apache-2.0 text, SHA-256 `cfc7749b…3d30`), `README.md`, `CONTRIBUTING.md`. Repo-local git identity set. |
 | 1.2 | ✅ Done | Rust 1.100.0 pinned; UniFFI `=0.32.2`, thiserror 2.0.21 (checked on crates.io 2026-11-16). On host: `cargo fmt --check`, `clippy -D warnings` and `cargo test` pass (8 tests); release build OK; Kotlin bindings generate from the `.so` (`CoreInfo`, `CoreException.InvalidInput`, `coreInfo()`, `echoValidated()`; 25 JNA references, as expected). |
-| 1.3+ | Blocked | No JDK, Android SDK, NDK or cargo-ndk on the development machine |
+| 1.3+ | Toolchain ready | Installed 2026-11-16: OpenJDK 21.0.13 (apt); Android SDK in `~/Android/Sdk` with cmdline-tools 16111833, platform-tools, build-tools 37.0.0, platform android-37.0, **NDK r30 (30.0.16248370)**; cargo-ndk 4.1.2. AGP 9.5.1 confirmed as latest stable on Google Maven. Cross-compiled `openop-ffi` for arm64-v8a and x86_64: all LOAD segments 16 KB-aligned (0x4000). |
+
+Testing device: instrumented tests run on the owner's Android 12+ phone
+over USB, not an emulator. The disk has too little free space for
+emulator images.
 
 Notes for step 1.4:
 
