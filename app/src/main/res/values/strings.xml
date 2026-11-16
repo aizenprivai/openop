@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">OPENOP</string>
+    <string name="placeholder_title">OPENOP</string>
+    <string name="placeholder_body">Development build. No features are implemented yet.</string>
+</resources>

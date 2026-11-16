@@ -459,6 +459,19 @@ project owner (what changed, what was run, what passed or failed).
 | 1.2 | ✅ Done | Rust 1.100.0 pinned; UniFFI `=0.32.2`, thiserror 2.0.21 (checked on crates.io 2026-11-16). On host: `cargo fmt --check`, `clippy -D warnings` and `cargo test` pass (8 tests); release build OK; Kotlin bindings generate from the `.so` (`CoreInfo`, `CoreException.InvalidInput`, `coreInfo()`, `echoValidated()`; 25 JNA references, as expected). |
 | 1.3+ | Toolchain ready | Installed 2026-11-16: OpenJDK 21.0.13 (apt); Android SDK in `~/Android/Sdk` with cmdline-tools 16111833, platform-tools, build-tools 37.0.0, platform android-37.0, **NDK r30 (30.0.16248370)**; cargo-ndk 4.1.2. AGP 9.5.1 confirmed as latest stable on Google Maven. Cross-compiled `openop-ffi` for arm64-v8a and x86_64: all LOAD segments 16 KB-aligned (0x4000). |
 
+| 1.3 | ✅ Builds; ⏳ not yet run on a device | Gradle 9.9.1 wrapper (distribution and wrapper JAR SHA-256 checked against gradle.org); AGP 9.5.1, Kotlin 2.4.21, Compose BOM 2026.09.00, ktlint 1.8.0 via ktlint-gradle 14.2.0; compile/target SDK 37, min SDK 31. App ID `io.github.aizenprivai.openop` (debug builds add `.debug`). `assembleDebug`, `lintDebug` (warnings as errors) and `ktlintCheck` pass. Placeholder Compose screen + one instrumented UI test, not yet run because no phone was connected. AGP downloaded build-tools 36.0.0 itself (its default). |
+
+Decisions made during 1.3 that the owner should know about:
+
+- `android:allowBackup="false"` plus `data_extraction_rules.xml` that
+  excludes everything from **cloud** backup (CLAUDE.md §7.1: no
+  background upload). Device-to-device transfer is left at the Android
+  default; decide it with the backup design in Phase 3.
+- Lint's `MissingApplicationIcon` check is disabled until the app icon
+  (open branding decision) is approved. No placeholder icon was made.
+- ktlint uses the `android_studio` style, allowing PascalCase names for
+  `@Composable` functions (standard Compose convention).
+
 Testing device: instrumented tests run on the owner's Android 12+ phone
 over USB, not an emulator. The disk has too little free space for
 emulator images.
