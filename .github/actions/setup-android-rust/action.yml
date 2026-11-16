@@ -1,0 +1,49 @@
+name: Set up Android + Rust toolchain
+description: >
+  JDK, pinned Android SDK packages and NDK, pinned Rust toolchain with
+  Android targets, and cargo-ndk. Versions come from the repository
+  (gradle/libs.versions.toml, rust/rust-toolchain.toml).
+
+runs:
+  using: composite
+  steps:
+    - name: Set up JDK 21
+      uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6.3.0
+      with:
+        distribution: temurin
+        java-version: "21"
+
+    - name: Install Android SDK packages and NDK
+      shell: bash
+      run: |
+        ndk=$(grep -E '^ndk *=' gradle/libs.versions.toml | cut -d'"' -f2)
+        compile_sdk=$(grep -E '^compile-sdk *=' gradle/libs.versions.toml | cut -d'"' -f2)
+        sdkmanager="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+        yes | "$sdkmanager" --licenses > /dev/null
+        "$sdkmanager" --install "ndk;$ndk" "platforms;android-$compile_sdk.0" > /dev/null
+        echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/$ndk" >> "$GITHUB_ENV"
+
+    - name: Install pinned Rust toolchain
+      shell: bash
+      working-directory: rust
+      # Installs the version, components and targets from rust-toolchain.toml.
+      run: rustup toolchain install && rustc --version
+
+    - name: Cache cargo registry, cargo-ndk and Rust build output
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          ~/.cargo/bin/cargo-ndk
+          rust/target
+        key: rust-${{ runner.os }}-${{ hashFiles('rust/rust-toolchain.toml', 'rust/Cargo.lock') }}
+        restore-keys: rust-${{ runner.os }}-
+
+    - name: Install cargo-ndk
+      shell: bash
+      run: |
+        version=4.1.2
+        if ! cargo ndk --version 2>/dev/null | grep -q "$version"; then
+          cargo install cargo-ndk --version "$version" --locked
+        fi
