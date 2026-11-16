@@ -19,7 +19,9 @@ runs:
         ndk=$(grep -E '^ndk *=' gradle/libs.versions.toml | cut -d'"' -f2)
         compile_sdk=$(grep -E '^compile-sdk *=' gradle/libs.versions.toml | cut -d'"' -f2)
         sdkmanager="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
-        yes | "$sdkmanager" --licenses > /dev/null
+        # `yes` exits on SIGPIPE when sdkmanager stops reading; ignore that
+        # without hiding a real sdkmanager failure (pipefail is on).
+        { yes || true; } | "$sdkmanager" --licenses > /dev/null
         "$sdkmanager" --install "ndk;$ndk" "platforms;android-$compile_sdk.0" > /dev/null
         echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/$ndk" >> "$GITHUB_ENV"
 
