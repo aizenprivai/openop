@@ -1,0 +1,4 @@
+[bindings.kotlin]
+# Generated bindings live in core-bridge only; the rest of the app uses CoreBridge.
+package_name = "io.github.aizenprivai.openop.core.ffi"
+cdylib_name = "openop_ffi"

@@ -23,3 +23,4 @@ dependencyResolutionManagement {
 rootProject.name = "openop"
 
 include(":app")
+include(":core-bridge")

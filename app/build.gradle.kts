@@ -16,6 +16,12 @@ android {
         versionName = "0.1.0-dev"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Only ABIs OPENOP supports (decision D3). Drops other ABIs bundled in
+        // dependencies such as JNA. Release narrows this to arm64-v8a in step 1.5.
+        ndk {
+            abiFilters += listOf("arm64-v8a", "x86_64")
+        }
     }
 
     buildTypes {
@@ -52,6 +58,7 @@ ktlint {
 }
 
 dependencies {
+    implementation(project(":core-bridge"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.compose.bom))

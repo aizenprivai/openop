@@ -461,6 +461,22 @@ project owner (what changed, what was run, what passed or failed).
 
 | 1.3 | ✅ Builds; ⏳ not yet run on a device | Gradle 9.9.1 wrapper (distribution and wrapper JAR SHA-256 checked against gradle.org); AGP 9.5.1, Kotlin 2.4.21, Compose BOM 2026.09.00, ktlint 1.8.0 via ktlint-gradle 14.2.0; compile/target SDK 37, min SDK 31. App ID `io.github.aizenprivai.openop` (debug builds add `.debug`). `assembleDebug`, `lintDebug` (warnings as errors) and `ktlintCheck` pass. Placeholder Compose screen + one instrumented UI test, not yet run because no phone was connected. AGP downloaded build-tools 36.0.0 itself (its default). |
 
+| 1.4 | ✅ Done, tested on device | `:core-bridge` library module: Gradle tasks run cargo-ndk (arm64-v8a + x86_64 debug, arm64-v8a release) and the version-locked UniFFI bindgen (`--no-format`, output in `build/`, not committed). Bindings package `io.github.aizenprivai.openop.core.ffi` set in `uniffi.toml`. JNA 5.19.1 (AAR). `CoreBridge` facade returns `Result`, maps errors to `CoreBridgeException`. Placeholder screen shows the Rust core version, loaded off the main thread. App `abiFilters` = arm64-v8a, x86_64. **Verified:** `assembleDebug`, `lintDebug`, `ktlintCheck`; host unit test (1/1); on the owner's phone (Xiaomi 25069PTEBG, Android 16 / API 36, arm64): app UI tests 2/2 and bridge tests 3/3 passed. `libopenop_ffi.so` and `libjnidispatch.so` both 16 KB-aligned; no absolute build paths in `libopenop_ffi.so`. |
+
+Findings from 1.4:
+
+- **AGP's test runner reports `BUILD SUCCESSFUL` when an APK fails to
+  install and 0 tests run.** Step 1.6 must make CI fail when an
+  instrumented test task runs no tests.
+- Xiaomi HyperOS needs **Install via USB** and **USB debugging
+  (Security settings)** turned on, and each install confirmed on the
+  phone. The core-bridge tests were therefore installed with
+  `adb install` and run with `adb shell am instrument`, not through
+  Gradle. Documented for `docs/development.md` (step 1.7).
+- The generated bindings are public Kotlin inside `:core-bridge`.
+  Other modules can only reach them by depending on `:core-bridge`,
+  and the rule is to use `CoreBridge`.
+
 Decisions made during 1.3 that the owner should know about:
 
 - `android:allowBackup="false"` plus `data_extraction_rules.xml` that
