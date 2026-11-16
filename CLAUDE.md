@@ -1485,6 +1485,9 @@ changes require a separate explicit instruction from the project owner.
                                       owner review
                                       (docs/phase-1-plan.md §13)
 
+  Phase 2 plan                        Drafted in docs/phase-2-plan.md;
+                                      awaiting decisions P2-D1..D10
+
   Implementation                      Phase 1 done; Phase 2 not
                                       authorized
 
