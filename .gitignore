@@ -1,0 +1,39 @@
+# --- Gradle / Android ---
+.gradle/
+build/
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+*.ap_
+*.dex
+output-metadata.json
+
+# --- Signing (never commit keys or their passwords) ---
+*.jks
+*.keystore
+keystore.properties
+signing.properties
+
+# --- Kotlin ---
+.kotlin/
+
+# --- Rust ---
+rust/target/
+**/*.rs.bk
+
+# --- IDEs ---
+.idea/
+*.iml
+.vscode/
+.fleet/
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+
+# --- Logs and local scratch ---
+*.log
+*.hprof
