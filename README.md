@@ -9,11 +9,13 @@ no telemetry and no cloud dependency.
 
 **Early development — nothing usable yet.**
 
-The project is in Phase 1 (repository and build foundation). None of the
-planned modules are implemented. See:
+Phase 1 (repository and build foundation) is complete, pending
+review: the app builds, launches and calls the Rust core through UniFFI.
+None of the planned modules are implemented yet. See:
 
 - [`CLAUDE.md`](CLAUDE.md) — full project specification and roadmap
-- [`docs/phase-1-plan.md`](docs/phase-1-plan.md) — current phase plan
+- [`docs/phase-1-plan.md`](docs/phase-1-plan.md) — Phase 1 plan and progress
+- [`docs/architecture.md`](docs/architecture.md) — architecture as implemented
 
 ## Planned modules
 
@@ -28,8 +30,14 @@ Dashboard · Files · Notes · Device · Tools · Local AI
 
 ## Building
 
-Build instructions will be added in `docs/development.md` once the
-Android and Rust build is in place.
+Requirements: JDK 21, Android SDK with NDK r30, Rust (rustup) and
+cargo-ndk. Full setup: [`docs/development.md`](docs/development.md).
+
+```bash
+./gradlew assembleDebug
+```
+
+Gradle also builds the Rust core and generates the Kotlin bindings.
 
 ## License
 

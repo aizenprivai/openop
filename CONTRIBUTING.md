@@ -19,12 +19,32 @@ tooling are set up.
 - Keep changes small and reviewable.
 - Do not claim tests pass unless you ran them.
 
+## Setup
+
+See [`docs/development.md`](docs/development.md).
+
 ## Formatting and checks
 
-Planned (set up during Phase 1):
+Run before every commit (CI runs the same):
 
-- Rust: `cargo fmt`, `cargo clippy -- -D warnings`, `cargo test`
-- Kotlin: ktlint, Android Lint, unit and instrumented tests
+- Rust: `cargo fmt --all --check`, `cargo clippy --workspace --all-targets --locked -- -D warnings`, `cargo test --workspace --locked`
+- Kotlin/Android: `./gradlew assembleDebug assembleRelease lintDebug lintRelease ktlintCheck testDebugUnitTest`
+- On a device: `./gradlew connectedDebugAndroidTest`, then `scripts/check-instrumented-results.sh`
+
+Fix Kotlin formatting with `./gradlew ktlintFormat`.
+
+## Dependencies
+
+New or updated dependencies need project-owner approval (see
+`CLAUDE.md` §8). After any change, regenerate
+`gradle/verification-metadata.xml` and review the diff
+(`docs/development.md` §6).
+
+## Architecture rules
+
+See [`docs/architecture.md`](docs/architecture.md). In short: only
+`CoreBridge` touches the generated UniFFI code, no native calls on the
+main thread, and never log user content.
 
 ## Licensing
 
