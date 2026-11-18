@@ -1486,7 +1486,7 @@ changes require a separate explicit instruction from the project owner.
                                       (docs/phase-1-plan.md §13)
 
   Phase 2 plan                        Drafted in docs/phase-2-plan.md;
-                                      awaiting decisions P2-D1..D10
+                                      rev. 2, awaiting decisions P2-D1..D11
 
   Implementation                      Phase 1 done; Phase 2 not
                                       authorized
