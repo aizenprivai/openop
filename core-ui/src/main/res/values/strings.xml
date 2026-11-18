@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="openop_action_retry">Retry</string>
+    <string name="openop_action_cancel">Cancel</string>
+    <string name="openop_loading">Loading</string>
+</resources>
