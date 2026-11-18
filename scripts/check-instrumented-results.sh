@@ -9,12 +9,12 @@
 # scripts/run-instrumented-tests.sh, which deletes them first.
 #
 # Usage: scripts/check-instrumented-results.sh [module ...]
-# Default modules: app core-bridge
+# Default modules: app core-bridge core-ui
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
 modules=("$@")
-[ ${#modules[@]} -eq 0 ] && modules=(app core-bridge)
+[ ${#modules[@]} -eq 0 ] && modules=(app core-bridge core-ui)
 
 # Prints the first value of XML attribute $2 in file $1, or nothing.
 attr() { grep -o "$2=\"[0-9]*\"" "$1" | head -1 | grep -o '[0-9]*' || true; }

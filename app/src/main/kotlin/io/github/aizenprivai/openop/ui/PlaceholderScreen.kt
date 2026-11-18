@@ -1,6 +1,5 @@
 package io.github.aizenprivai.openop.ui
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,14 +8,11 @@ import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import io.github.aizenprivai.openop.R
 import io.github.aizenprivai.openop.core.CoreBridge
 import io.github.aizenprivai.openop.core.CoreInfo
+import io.github.aizenprivai.openop.designsystem.OpenopTheme
 import io.github.aizenprivai.openop.log.AppLog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -61,16 +58,7 @@ fun PlaceholderScreen() {
 
 @Composable
 fun PlaceholderContent(status: CoreStatus) {
-    // minSdk is 31, so Dynamic Color is always available.
-    val context = LocalContext.current
-    val colors =
-        if (isSystemInDarkTheme()) {
-            dynamicDarkColorScheme(context)
-        } else {
-            dynamicLightColorScheme(context)
-        }
-
-    MaterialTheme(colorScheme = colors) {
+    OpenopTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier =

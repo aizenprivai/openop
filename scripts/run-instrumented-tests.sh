@@ -4,12 +4,12 @@
 # pass on stale results.
 #
 # Usage: scripts/run-instrumented-tests.sh [module ...]
-# Default modules: app core-bridge
+# Default modules: app core-bridge core-ui
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
 modules=("$@")
-[ ${#modules[@]} -eq 0 ] && modules=(app core-bridge)
+[ ${#modules[@]} -eq 0 ] && modules=(app core-bridge core-ui)
 
 tasks=()
 for module in "${modules[@]}"; do

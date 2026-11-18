@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      Window theme shown before Compose draws. The background uses the system's
+      dynamic neutral palette (API 31+), close to the Material 3 surface colour,
+      so there is no wrong-colour flash at launch. Dark variant in values-night.
+    -->
+    <style name="Theme.Openop" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@android:color/system_neutral1_10</item>
+    </style>
+</resources>
