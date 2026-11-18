@@ -1,9 +1,8 @@
 import java.util.Properties
 
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.ktlint)
+    id("openop.android.application")
+    id("openop.android.compose")
 }
 
 // Release signing comes from an untracked keystore.properties at the repo root
@@ -21,18 +20,11 @@ fun Properties.required(key: String): String =
 
 android {
     namespace = "io.github.aizenprivai.openop"
-    compileSdk = libs.versions.compile.sdk.get().toInt()
-    // Lets AGP strip debug symbols from bundled native libraries.
-    ndkVersion = libs.versions.ndk.get()
 
     defaultConfig {
         applicationId = "io.github.aizenprivai.openop"
-        minSdk = libs.versions.min.sdk.get().toInt()
-        targetSdk = libs.versions.target.sdk.get().toInt()
         versionCode = 1
         versionName = "0.1.0-dev"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     signingConfigs {
@@ -68,19 +60,11 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
     buildFeatures {
-        compose = true
         buildConfig = true
     }
 
     lint {
-        warningsAsErrors = true
-        abortOnError = true
         // App icon is an open branding decision (CLAUDE.md §2.1).
         // Re-enable this check when the icon is approved.
         disable += "MissingApplicationIcon"
@@ -90,24 +74,13 @@ android {
     }
 }
 
-ktlint {
-    version.set(libs.versions.ktlint.engine.get())
-    android.set(true)
-}
-
 dependencies {
     implementation(project(":core-bridge"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.compose.bom))
-    implementation(libs.compose.ui)
-    implementation(libs.compose.ui.tooling.preview)
-    implementation(libs.compose.material3)
-    debugImplementation(libs.compose.ui.tooling)
 
     testImplementation(libs.junit4)
 
-    androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.test.espresso.core)

@@ -524,3 +524,26 @@ release notes and sources, official Navigation 3 recipes), 2026-11-18:
   `ProgressRow` moves to Phase 3.
 - **§2:** newer library versions were announced but aren't published
   yet; re-check at implementation start.
+
+------------------------------------------------------------------------
+
+## 15. Progress
+
+| # | State | Notes |
+|---|---|---|
+| 2.1 | ✅ Done | `build-logic/` included build with convention plugins `openop.android.application`, `openop.android.library`, `openop.android.compose`, `openop.kotlin.jvm`, `openop.ktlint`, `openop.rust-bridge` (Rust tasks moved out of `core-bridge/build.gradle.kts`, behaviour unchanged). `:core-navigation` (pure Kotlin): `Destination`, `TopLevel`, immutable `NavState` (select/open/back, rail selection, displayed stack), `NavStateCodec`. Written test-first: 31 unit tests, every rule watched failing before implementation. `:core-ui` skeleton (`Spacing`). Release APK unchanged: 1,989,216 bytes before and after. Verification metadata regenerated from an empty Gradle cache (514 components). |
+
+Changes made during 2.1 (beyond the plan):
+
+- **Lifecycle pinned to 2.11.0** for every Compose module (constraint in
+  `openop.android.compose`). Library modules otherwise resolved lifecycle
+  2.9.4, whose bundled lint checks AGP 9.5 rejects
+  (`ObsoleteLintCustomCheck`, an error under warnings-as-errors). The
+  app moves from 2.10.0 to 2.11.0, the latest stable.
+- The ktlint exclude for generated sources now applies to every module
+  (it only matters where code is generated).
+- `open(root)` on a tab that is already selected but deep now returns
+  that tab to its root (found in review; spec §4.3 "show destination").
+  `open` also covers the planned `push`.
+- Corrupt saved state with duplicate entries now falls back to the
+  start state instead of being accepted (found in review).

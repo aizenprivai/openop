@@ -1,4 +1,6 @@
 pluginManagement {
+    // OPENOP convention plugins (openop.android.*, openop.rust-bridge, ...).
+    includeBuild("build-logic")
     repositories {
         google {
             content {
@@ -24,3 +26,5 @@ rootProject.name = "openop"
 
 include(":app")
 include(":core-bridge")
+include(":core-navigation")
+include(":core-ui")
