@@ -1,3 +1,5 @@
+import groovy.json.JsonSlurper
+import java.io.ByteArrayOutputStream
 import java.io.File
 import javax.inject.Inject
 import org.gradle.process.ExecOperations
@@ -18,9 +20,10 @@ fun rustInputs() = fileTree(rustDir) {
 }
 
 /** Version from [workspace.package] in rust/Cargo.toml, used by instrumented tests. */
+// Read through providers so the configuration cache tracks the file.
 val rustCoreVersion: String =
     Regex("""(?s)\[workspace\.package].*?\bversion\s*=\s*"([^"]+)"""")
-        .find(rustDir.resolve("Cargo.toml").readText())
+        .find(providers.fileContents(rootProject.layout.projectDirectory.file("rust/Cargo.toml")).asText.get())
         ?.groupValues
         ?.get(1)
         ?: error("Could not read workspace version from rust/Cargo.toml")
@@ -56,15 +59,24 @@ abstract class CargoNdkBuildTask : DefaultTask() {
         val cargoHome = System.getenv("CARGO_HOME") ?: "${System.getProperty("user.home")}/.cargo"
 
         // Strip machine-specific paths from the binary (reproducible builds).
-        val remap =
+        // Passed as a TOML array via --config (not a space-separated env var),
+        // so paths containing spaces work. TOML literal strings need no escaping
+        // of Windows backslashes.
+        val rustflags =
             listOf(
                 "--remap-path-prefix=${rust.parentFile.absolutePath}=/openop",
                 "--remap-path-prefix=$cargoHome=/cargo"
-            ).joinToString(" ")
+            ).onEach { require('\'' !in it) { "Path contains a single quote: $it" } }
+                .joinToString(", ", "[", "]") { "'$it'" }
+        val triples = mapOf("arm64-v8a" to "aarch64-linux-android", "x86_64" to "x86_64-linux-android")
 
         val cargoArgs = mutableListOf("ndk", "--platform", minSdk.get().toString())
         abis.get().forEach { cargoArgs += listOf("-t", it) }
         cargoArgs += listOf("-o", out.absolutePath, "build", "-p", "openop-ffi", "--locked")
+        abis.get().forEach { abi ->
+            val triple = triples[abi] ?: error("No Rust target for ABI $abi")
+            cargoArgs += listOf("--config", "target.$triple.rustflags=$rustflags")
+        }
         if (release.get()) cargoArgs += "--release"
 
         execOps.exec {
@@ -72,8 +84,6 @@ abstract class CargoNdkBuildTask : DefaultTask() {
             executable = "cargo"
             args(cargoArgs)
             environment("ANDROID_NDK_HOME", ndkDir.get().asFile.absolutePath)
-            environment("CARGO_TARGET_AARCH64_LINUX_ANDROID_RUSTFLAGS", remap)
-            environment("CARGO_TARGET_X86_64_LINUX_ANDROID_RUSTFLAGS", remap)
         }
     }
 }
@@ -103,6 +113,20 @@ abstract class UniffiBindgenTask : DefaultTask() {
             args("build", "-p", "openop-ffi", "--locked")
         }
 
+        // Respect CARGO_TARGET_DIR and .cargo/config: ask Cargo where it builds.
+        val metadata = ByteArrayOutputStream()
+        execOps.exec {
+            workingDir = rust
+            executable = "cargo"
+            args("metadata", "--format-version", "1", "--no-deps", "--locked")
+            standardOutput = metadata
+        }
+        @Suppress("UNCHECKED_CAST")
+        val targetDir =
+            (JsonSlurper().parseText(metadata.toString(Charsets.UTF_8)) as Map<String, Any?>)[
+                "target_directory"
+            ] as String
+
         val os = System.getProperty("os.name").lowercase()
         val libName =
             when {
@@ -117,7 +141,7 @@ abstract class UniffiBindgenTask : DefaultTask() {
             args(
                 "run", "-q", "-p", "uniffi-bindgen", "--locked", "--",
                 "generate",
-                "--library", rust.resolve("target/debug/$libName").absolutePath,
+                "--library", File(targetDir, "debug/$libName").absolutePath,
                 "--language", "kotlin",
                 "--no-format",
                 "--out-dir", out.absolutePath

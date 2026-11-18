@@ -112,9 +112,7 @@ jobs:
           target: default
           arch: x86_64
           disable-animations: true
-          script: |
-            ./gradlew --console=plain connectedDebugAndroidTest
-            scripts/check-instrumented-results.sh app core-bridge
+          script: scripts/run-instrumented-tests.sh app core-bridge
 
       - name: Upload instrumented test results
         if: always()

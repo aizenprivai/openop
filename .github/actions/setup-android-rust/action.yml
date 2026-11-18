@@ -45,7 +45,7 @@ runs:
     - name: Install cargo-ndk
       shell: bash
       run: |
-        version=4.1.2
+        version=$(grep -E '^cargo-ndk *=' gradle/libs.versions.toml | cut -d'"' -f2)
         if ! cargo ndk --version 2>/dev/null | grep -q "$version"; then
           cargo install cargo-ndk --version "$version" --locked
         fi

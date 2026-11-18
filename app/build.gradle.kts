@@ -9,10 +9,15 @@ plugins {
 // Release signing comes from an untracked keystore.properties at the repo root
 // (keys: storeFile, storePassword, keyAlias, keyPassword). Without it, the
 // release APK is built unsigned. Keys and passwords are never committed.
-val keystoreProperties =
-    rootProject.file("keystore.properties").takeIf { it.isFile }?.let { file ->
-        Properties().apply { file.inputStream().use(::load) }
-    }
+// Read through providers so the configuration cache tracks the file.
+val keystoreProperties: Properties? =
+    providers.fileContents(rootProject.layout.projectDirectory.file("keystore.properties"))
+        .asText
+        .orNull
+        ?.let { text -> Properties().apply { load(text.reader()) } }
+
+fun Properties.required(key: String): String =
+    requireNotNull(getProperty(key)?.takeIf { it.isNotBlank() }) { "keystore.properties is missing '$key'" }
 
 android {
     namespace = "io.github.aizenprivai.openop"
@@ -33,10 +38,10 @@ android {
     signingConfigs {
         if (keystoreProperties != null) {
             create("release") {
-                storeFile = rootProject.file(keystoreProperties.getProperty("storeFile"))
-                storePassword = keystoreProperties.getProperty("storePassword")
-                keyAlias = keystoreProperties.getProperty("keyAlias")
-                keyPassword = keystoreProperties.getProperty("keyPassword")
+                storeFile = rootProject.file(keystoreProperties.required("storeFile"))
+                storePassword = keystoreProperties.required("storePassword")
+                keyAlias = keystoreProperties.required("keyAlias")
+                keyPassword = keystoreProperties.required("keyPassword")
             }
         }
     }

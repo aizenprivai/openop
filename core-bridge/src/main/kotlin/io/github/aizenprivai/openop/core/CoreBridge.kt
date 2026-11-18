@@ -39,8 +39,10 @@ object CoreBridge {
     } catch (e: Exception) {
         // Includes UniFFI's InternalException (Rust panic).
         Result.failure(CoreBridgeException.Internal(e))
-    } catch (e: UnsatisfiedLinkError) {
-        // Native library missing or for the wrong ABI.
+    } catch (e: LinkageError) {
+        // Native library missing or for the wrong ABI (UnsatisfiedLinkError), or
+        // the generated bindings failed to initialise: ExceptionInInitializerError
+        // on the first call, NoClassDefFoundError on every later one.
         Result.failure(CoreBridgeException.Internal(e))
     }
 

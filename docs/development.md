@@ -11,7 +11,7 @@ Verified on Ubuntu 24.04 (x86_64), 2026-11-16.
 | Android SDK | platform `android-37.0`, build-tools 37.0.0 | `gradle/libs.versions.toml` (`compile-sdk`) |
 | Android NDK | 30.0.16248370 (r30) | `gradle/libs.versions.toml` (`ndk`) |
 | Rust | 1.100.0 + targets `aarch64-linux-android`, `x86_64-linux-android` | `rust/rust-toolchain.toml` |
-| cargo-ndk | 4.1.2 | this document and CI |
+| cargo-ndk | 4.1.2 | `gradle/libs.versions.toml` (`cargo-ndk`, read by CI) |
 | Gradle | 9.9.1 (downloaded by the wrapper) | `gradle/wrapper/gradle-wrapper.properties` |
 
 About 6 GB of free disk space is needed for the SDK, NDK, Rust toolchain
@@ -119,16 +119,13 @@ Connect an Android 12+ device with USB debugging turned on, or start an
 x86_64 emulator, then:
 
 ```bash
-./gradlew connectedDebugAndroidTest
+scripts/run-instrumented-tests.sh
 ```
 
-```bash
-scripts/check-instrumented-results.sh
-```
-
-**Always run the second command.** If an APK fails to install, Gradle
-can still report `BUILD SUCCESSFUL` with 0 tests run; the script
-catches that.
+Use this script rather than calling `connectedDebugAndroidTest` on its own. It
+deletes old results, runs the tests, then checks the results. If an APK fails to
+install, Gradle can still report `BUILD SUCCESSFUL` with 0 tests run; the
+script catches that. To run one module: `scripts/run-instrumented-tests.sh app`.
 
 ### Xiaomi / HyperOS devices
 
@@ -144,7 +141,7 @@ countdown ends. Because Gradle installs several APKs in a row, it can
 help to run one module at a time:
 
 ```bash
-./gradlew :app:connectedDebugAndroidTest
+scripts/run-instrumented-tests.sh app
 ```
 
 or to install and run a test APK by hand:
@@ -179,9 +176,9 @@ All versions are pinned. To update one:
 
 1. Check the latest stable version from the official source.
 2. Change it in one place: `gradle/libs.versions.toml`,
-   `rust/rust-toolchain.toml`, `rust/Cargo.toml`, the Gradle wrapper,
-   or the cargo-ndk version in this document and in
-   `.github/actions/setup-android-rust/action.yml`.
+   `rust/rust-toolchain.toml`, `rust/Cargo.toml`, or the Gradle wrapper.
+   The cargo-ndk version is in `gradle/libs.versions.toml`; also update
+   the install command in this document.
 3. Regenerate dependency verification (section 6).
 4. Run all checks (sections 4 and 5).
 
