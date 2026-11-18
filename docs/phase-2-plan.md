@@ -1,7 +1,8 @@
 # OPENOP — Phase 2 Implementation Plan
 
 > **Phase:** 2 — Application shell and design system
-> **Status:** Draft rev. 2 — awaiting project-owner approval
+> **Status:** Rev. 2 — decisions P2-D1 to P2-D11 approved 2026-11-19
+> (§3.1). Implementation still needs the owner's explicit go-ahead.
 > **Date:** 2026-11-19 (rev. 1: 2026-11-16)
 > **Scope source:** `CLAUDE.md` §4 and §10 (Phase 2)
 > **Builds on:** Phase 1 (complete, CI green)
@@ -232,6 +233,29 @@ states".
 **Recommendation: spec set.** `ProgressRow` from rev. 1 moves to
 Phase 3, which already plans the common progress and cancellation
 pattern. That aligns with the spec rather than reducing it.
+
+### 3.1 Approved answers (2026-11-19)
+
+The project owner accepted every recommendation:
+
+- **P2-D1:** Option B. The bottom bar is Dashboard · Files · Notes ·
+  AI · More, with Device and Tools under More. The navigation rail on
+  wide windows shows all six destinations.
+- **P2-D2:** Navigation 3, with an app-owned back stack and a custom
+  saver. No kotlinx.serialization.
+- **P2-D3:** `NavigationSuiteScaffold` (material3-adaptive-navigation-suite).
+- **P2-D4:** Feature modules: `:core-navigation`, `:core-ui`,
+  `:feature:*`, and `build-logic/` convention plugins, including
+  `openop.rust-bridge`.
+- **P2-D5:** Vendored Material Symbols vector drawables, only those
+  used, listed in `NOTICE`.
+- **P2-D6:** Labels Dashboard, Files, Notes, Device, Tools, AI, More.
+- **P2-D7:** App icon and brand colour stay deferred.
+- **P2-D8:** Accessibility checks in UI tests (API 34+).
+- **P2-D9:** Rust core footer on the Dashboard placeholder.
+- **P2-D10:** Debug-only component catalogue.
+- **P2-D11:** The full spec component set. `ProgressRow` moves to
+  Phase 3.
 
 ------------------------------------------------------------------------
 
@@ -465,11 +489,8 @@ green project.
 
 ## 13. Approval question
 
-Please answer **P2-D1 to P2-D11** (§3). P2-D1, P2-D6 and P2-D7 are open
-product decisions in CLAUDE.md; P2-D11 decides whether Phase 2 keeps
-the full spec component set. Once the plan is approved and the
-decisions are answered, Phase 2 starts with increment 2.1 on your
-explicit go-ahead.
+Decisions answered (§3.1). Phase 2 starts with increment 2.1 once the
+project owner explicitly authorizes implementation.
 
 ------------------------------------------------------------------------
 

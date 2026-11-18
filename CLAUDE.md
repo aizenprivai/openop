@@ -135,6 +135,19 @@ initial release.
                                       subject to Android/device
                                       limitations
 
+  Navigation structure (Phase 2)      Bottom bar: Dashboard, Files,
+                                      Notes, AI, More (More = Device,
+                                      Tools); navigation rail with all
+                                      six destinations on wide windows
+                                      (P2-D1, docs/phase-2-plan.md §3.1)
+
+  Phase 2 decisions                   P2-D1–D11 in docs/phase-2-plan.md
+                                      §3.1 (Navigation 3, adaptive
+                                      navigation suite, feature modules
+                                      + build-logic, Material Symbols,
+                                      spec labels, branding deferred,
+                                      a11y checks, full component set)
+
   Phase 1 build decisions             D1–D9 in docs/phase-1-plan.md
                                       §10.1 (app ID io.github.<username>
                                       .openop, Apache-2.0 LICENSE,
@@ -158,7 +171,9 @@ Do not silently decide them.
 -   Exact backup archive format and compatibility policy.
 -   Final list of Tools utilities.
 -   Detailed Dashboard widget customization.
--   Final visual branding, app icon, and naming of individual modules.
+-   Final visual branding and app icon (deferred by P2-D7). Module
+    labels are set for now by P2-D6 (Dashboard, Files, Notes, Device,
+    Tools, AI, More) and can be revisited.
 -   Any feature not explicitly approved in this document.
 
 When a decision is required, present the options, explain their
@@ -1485,8 +1500,9 @@ changes require a separate explicit instruction from the project owner.
                                       owner review
                                       (docs/phase-1-plan.md §13)
 
-  Phase 2 plan                        Drafted in docs/phase-2-plan.md;
-                                      rev. 2, awaiting decisions P2-D1..D11
+  Phase 2 plan                        docs/phase-2-plan.md rev. 2;
+                                      decisions approved; implementation
+                                      awaiting authorization
 
   Implementation                      Phase 1 done; Phase 2 not
                                       authorized
