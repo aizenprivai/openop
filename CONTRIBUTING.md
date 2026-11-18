@@ -28,7 +28,7 @@ See [`docs/development.md`](docs/development.md).
 Run before every commit (CI runs the same):
 
 - Rust: `cargo fmt --all --check`, `cargo clippy --workspace --all-targets --locked -- -D warnings`, `cargo test --workspace --locked`
-- Kotlin/Android: `./gradlew assembleDebug assembleRelease lintDebug lintRelease ktlintCheck testDebugUnitTest`
+- Kotlin/Android: `./gradlew assembleDebug assembleRelease lintDebug lintRelease ktlintCheck test`
 - On a device: `scripts/run-instrumented-tests.sh`
 
 Fix Kotlin formatting with `./gradlew ktlintFormat`.

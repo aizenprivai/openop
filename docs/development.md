@@ -100,7 +100,7 @@ cd rust && cargo fmt --all --check && cargo clippy --workspace --all-targets --l
 ```
 
 ```bash
-./gradlew assembleDebug assembleRelease lintDebug lintRelease ktlintCheck testDebugUnitTest
+./gradlew assembleDebug assembleRelease lintDebug lintRelease ktlintCheck test
 ```
 
 ```bash
@@ -164,7 +164,7 @@ After adding or updating a dependency or plugin, regenerate the file
 and review the diff before committing:
 
 ```bash
-./gradlew --no-configuration-cache --write-verification-metadata sha256 assembleDebug assembleRelease assembleDebugAndroidTest lintDebug lintRelease ktlintCheck testDebugUnitTest
+./gradlew --no-configuration-cache --write-verification-metadata sha256 assembleDebug assembleRelease assembleDebugAndroidTest lintDebug lintRelease ktlintCheck test
 ```
 
 Include `connectedDebugAndroidTest` (with a device connected) when the

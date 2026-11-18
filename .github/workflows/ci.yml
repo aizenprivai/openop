@@ -58,7 +58,7 @@ jobs:
           ./gradlew --console=plain
           assembleDebug assembleRelease
           lintDebug lintRelease
-          ktlintCheck testDebugUnitTest
+          ktlintCheck test
 
       - name: Check native libraries (ABIs, 16 KB alignment)
         run: |
