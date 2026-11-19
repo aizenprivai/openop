@@ -956,7 +956,8 @@ Exit criteria:
 
 ## Phase 2 --- Application shell and design system
 
-**Status: Planned --- not started**
+**Status: Implemented; CI green; phone check pending (see
+docs/phase-2-plan.md §10)**
 
 Objectives:
 
@@ -1500,11 +1501,11 @@ changes require a separate explicit instruction from the project owner.
                                       owner review
                                       (docs/phase-1-plan.md §13)
 
-  Phase 2 plan                        docs/phase-2-plan.md rev. 2;
-                                      decisions approved; implementation
-                                      awaiting authorization
+  Phase 2 (shell, design system)      Implemented; CI green; phone
+                                      check pending
+                                      (docs/phase-2-plan.md §10)
 
-  Implementation                      Phase 1 done; Phase 2 not
+  Implementation                      Phases 1–2 done; Phase 3 not
                                       authorized
 
   Release                             Not started

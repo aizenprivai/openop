@@ -9,13 +9,17 @@ no telemetry and no cloud dependency.
 
 **Early development — nothing usable yet.**
 
-Phase 1 (repository and build foundation) is complete, pending
-review: the app builds, launches and calls the Rust core through UniFFI.
-None of the planned modules are implemented yet. See:
+Phase 2 (app shell and design system) is implemented: the app has its
+navigation (bottom bar on phones, rail on wide screens), theme and shared
+components, and calls the Rust core through UniFFI. **The modules
+themselves are placeholders**: each screen says which phase will build it.
+See:
 
 - [`CLAUDE.md`](CLAUDE.md) — full project specification and roadmap
 - [`docs/phase-1-plan.md`](docs/phase-1-plan.md) — Phase 1 plan and progress
+- [`docs/phase-2-plan.md`](docs/phase-2-plan.md) — Phase 2 plan and progress
 - [`docs/architecture.md`](docs/architecture.md) — architecture as implemented
+- [`docs/design-system.md`](docs/design-system.md) — theme and components
 
 ## Planned modules
 

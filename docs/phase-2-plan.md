@@ -1,8 +1,8 @@
 # OPENOP — Phase 2 Implementation Plan
 
 > **Phase:** 2 — Application shell and design system
-> **Status:** Rev. 2 — decisions P2-D1 to P2-D11 approved 2026-11-19
-> (§3.1). Implementation still needs the owner's explicit go-ahead.
+> **Status:** Implemented (2.1–2.5 and the 2.6 docs); CI green. The phone
+> check (visuals, insets, TalkBack) is still pending (§10, §15).
 > **Date:** 2026-11-19 (rev. 1: 2026-11-16)
 > **Scope source:** `CLAUDE.md` §4 and §10 (Phase 2)
 > **Builds on:** Phase 1 (complete, CI green)
@@ -443,22 +443,34 @@ green project.
 
 ## 10. Acceptance criteria (Phase 2 exit)
 
-- [ ] Every approved destination can be opened (bar on phone, rail on
-      wide window), tested in CI on API 31 and 37 and on the phone.
-- [ ] Navigation behaves consistently: §4.2 rules covered by unit and
-      UI tests; state survives recreation; process-death restore
-      checked as described in §8.
-- [ ] Light and dark themes with Dynamic Color render correctly, with
-      no launch flash (tests + phone screenshots in both modes).
-- [ ] No module functionality is presented as complete: every
-      placeholder says "Planned for Phase N" and has no fake actions.
-- [ ] Reusable components (P2-D11 set) exist, are documented in
-      `docs/design-system.md`, and have tests.
-- [ ] Accessibility checks pass (API 34+); font scale 2.0 and landscape
-      show no clipping; TalkBack pass recorded.
-- [ ] New dependencies listed with licences; `NOTICE` covers vendored
-      icons; verification metadata regenerated from an empty cache.
-- [ ] All Phase 1 checks still pass; CI green.
+Status (2026-11-19). CI = x86_64 emulators, API 31 and API 37.
+
+- [x] Every approved destination can be opened, from the bar (5 items) and
+      from the rail (6 items). `ShellBarTest` and `ShellRailTest` pass in CI
+      on API 31 and 37. *Not yet run on the phone.*
+- [x] Navigation behaves consistently. The §4.2 rules are covered by 31
+      unit tests (`:core-navigation`) and by UI tests for back, reselect,
+      tab memory and shortcuts. State survives activity recreation
+      (`MainActivityTest`) and the save/restore path used after process
+      death (`StateRestorationTester`).
+- [~] Light and dark themes with Dynamic Color render correctly.
+      `OpenopThemeTest` checks the dynamic light/dark schemes in CI.
+      Accessibility checks pass in dark mode. **Phone screenshots in both
+      modes are pending.**
+- [x] No module functionality is presented as complete. Every
+      placeholder says "Planned for Phase N" and has no actions
+      (`placeholdersOfferNoActions`). Dashboard shortcuts navigate for real.
+- [x] Reusable components (spec set, P2-D11) exist, are documented in
+      `docs/design-system.md`, and have 11 component tests (plus 3 theme
+      tests).
+- [~] Accessibility checks (Accessibility Test Framework, API 34+) pass
+      on every screen: bar, rail, dark mode, font scale 2.0, real landscape
+      rotation, and before every click in the component tests. **The manual
+      TalkBack pass on the phone is pending.**
+- [x] New dependencies listed with licences (§7). `NOTICE` covers
+      vendored icons. Verification metadata was checked from an empty
+      Gradle cache after each dependency change.
+- [x] All Phase 1 checks still pass; CI green (`04cf5d1`).
 
 ------------------------------------------------------------------------
 
@@ -532,6 +544,11 @@ release notes and sources, official Navigation 3 recipes), 2026-11-18:
 | # | State | Notes |
 |---|---|---|
 | 2.1 | ✅ Done | `build-logic/` included build with convention plugins `openop.android.application`, `openop.android.library`, `openop.android.compose`, `openop.kotlin.jvm`, `openop.ktlint`, `openop.rust-bridge` (Rust tasks moved out of `core-bridge/build.gradle.kts`, behaviour unchanged). `:core-navigation` (pure Kotlin): `Destination`, `TopLevel`, immutable `NavState` (select/open/back, rail selection, displayed stack), `NavStateCodec`. Written test-first: 31 unit tests, every rule watched failing before implementation. `:core-ui` skeleton (`Spacing`). Release APK unchanged: 1,989,216 bytes before and after. Verification metadata regenerated from an empty Gradle cache (514 components). |
+| 2.2 | ✅ Done | `OpenopTheme` (Dynamic Color light/dark); DayNight window theme using the system dynamic neutral palette (no launch flash); Compose test setup moved into `openop.android.compose`. |
+| 2.3 | ✅ Done | Spec component set (P2-D11) with previews and component tests; debug-only "OPENOP Catalog" activity (absent from the release APK, checked). |
+| 2.4 | ✅ Done | Feature modules (dashboard, files, notes, device, tools, ai); `NavigationSuiteScaffold` + Navigation 3 shell driven by `NavState`; More screen; 13 Material Symbols icons; `NOTICE`. Shell UI tests for bar, rail, back, reselect, restore and recreation. |
+| 2.5 | ✅ Automated part done | Accessibility Test Framework checks on every screen (API 34+), font scale 2.0, dark mode, real landscape rotation. TalkBack manual pass pending (phone). |
+| 2.6 | ⏳ Docs done; phone check pending | `docs/design-system.md`; `docs/architecture.md` updated for Phase 2. |
 
 Changes made during 2.1 (beyond the plan):
 
@@ -547,3 +564,33 @@ Changes made during 2.1 (beyond the plan):
   `open` also covers the planned `push`.
 - Corrupt saved state with duplicate entries now falls back to the
   start state instead of being accepted (found in review).
+
+Found and fixed during 2.2–2.5 (each found by CI or review, not by luck):
+
+- **Stale Dashboard footer (app bug).** NavDisplay keeps each entry's
+  content lambda, so the footer kept showing "Connecting…" after the Rust
+  call returned. Fixed with `rememberUpdatedState`; covered by
+  `MainActivityTest`.
+- **Destructive dialog focus.** The focus request now runs in the dialog's
+  own window. It only applies outside touch mode, and the test checks it
+  that way.
+- **Malformed icon XML.** Removing the AppCompat-only `android:tint` line
+  also removed the `>` closing `<vector>`; repaired and documented in
+  `design-system.md`.
+- **Weak tests.** Shell assertions used substrings that also appear on
+  Dashboard cards (review finding); they now match placeholder-only text.
+  Overlapping test layouts and ambiguous labels in the component tests were
+  fixed, and back presses in tests wait for pending recomposition.
+- **Invalid landscape test.** A forced window size rescales density, which
+  distorted the touch-target checks; the test now really rotates the
+  activity.
+- **Small design-system changes:** `:core-ui` depends on the pure-Kotlin
+  `:core-navigation` (one mapping for labels, icons and phases);
+  `ListRow` announces a button role; `currentWindowAdaptiveInfoV2` is used
+  (V1 is deprecated).
+
+Open question for the owner (from review, not changed): on the **rail**,
+Back from Device or Tools goes to the More screen (spec §4.2, since Device
+and Tools live under More). The rail has no "More" item, so nothing is
+highlighted there. An alternative is to skip the More screen on the rail
+and go straight to Dashboard. Changing this needs approval.
