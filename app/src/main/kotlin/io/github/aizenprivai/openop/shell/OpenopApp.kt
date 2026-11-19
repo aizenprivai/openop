@@ -10,6 +10,7 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -57,6 +58,9 @@ fun OpenopApp(
         NavigationSuiteScaffoldDefaults.navigationSuiteType(currentWindowAdaptiveInfoV2())
 ) {
     var nav by rememberSaveable(stateSaver = NavStateSaver) { mutableStateOf(NavState.Start) }
+    // NavDisplay keeps each entry's content lambda, so read changing inputs through
+    // State: the Dashboard footer must update when the Rust call returns.
+    val currentCoreStatus by rememberUpdatedState(coreStatus)
     val isBar = navigationSuiteType in BarTypes
 
     NavigationSuiteScaffold(
@@ -89,12 +93,20 @@ fun OpenopApp(
             entryProvider = { destination ->
                 NavEntry(destination) {
                     when (destination) {
-                        Destination.Dashboard -> DashboardScreen(onOpen = { nav = nav.open(it) }, footer = coreStatus)
+                        Destination.Dashboard -> DashboardScreen(onOpen = {
+                            nav = nav.open(it)
+                        }, footer = currentCoreStatus)
+
                         Destination.Files -> FilesScreen()
+
                         Destination.Notes -> NotesScreen()
+
                         Destination.Ai -> AiScreen()
+
                         Destination.More -> MoreScreen(onOpen = { nav = nav.open(it) })
+
                         Destination.Device -> DeviceScreen()
+
                         Destination.Tools -> ToolsScreen()
                     }
                 }
