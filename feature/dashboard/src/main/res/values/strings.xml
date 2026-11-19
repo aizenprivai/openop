@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dashboard_intro">Development build. The overview arrives in Phase 4; until then, use the shortcuts below.</string>
+    <string name="dashboard_areas">Areas</string>
+</resources>

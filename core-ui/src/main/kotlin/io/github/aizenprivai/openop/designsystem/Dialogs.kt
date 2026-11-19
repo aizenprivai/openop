@@ -60,7 +60,9 @@ fun DestructiveConfirmDialog(
         },
         dismissButton = {
             TextButton(onClick = onDismiss, modifier = Modifier.focusRequester(cancelFocus)) { Text(dismissLabel) }
+            // Runs inside the dialog's own window, once Cancel exists. Buttons only take
+            // focus outside touch mode (keyboard, D-pad), which is where this matters.
+            LaunchedEffect(Unit) { cancelFocus.requestFocus() }
         }
     )
-    LaunchedEffect(Unit) { cancelFocus.requestFocus() }
 }

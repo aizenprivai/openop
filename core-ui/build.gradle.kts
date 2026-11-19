@@ -7,3 +7,8 @@ plugins {
 android {
     namespace = "io.github.aizenprivai.openop.designsystem"
 }
+
+dependencies {
+    // Pure Kotlin destination model; lets one mapping hold labels, icons and planned phases.
+    api(project(":core-navigation"))
+}

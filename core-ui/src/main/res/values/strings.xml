@@ -3,4 +3,24 @@
     <string name="openop_action_retry">Retry</string>
     <string name="openop_action_cancel">Cancel</string>
     <string name="openop_loading">Loading</string>
+
+    <!-- Destination labels (approved decision P2-D6). -->
+    <string name="openop_dest_dashboard">Dashboard</string>
+    <string name="openop_dest_files">Files</string>
+    <string name="openop_dest_notes">Notes</string>
+    <string name="openop_dest_device">Device</string>
+    <string name="openop_dest_tools">Tools</string>
+    <string name="openop_dest_ai">AI</string>
+    <string name="openop_dest_more">More</string>
+
+    <!-- One-line purpose of each module (CLAUDE.md §5). -->
+    <string name="openop_purpose_dashboard">An overview of OPENOP and quick access to its modules.</string>
+    <string name="openop_purpose_files">A file manager for shared storage, SD cards and USB drives.</string>
+    <string name="openop_purpose_notes">Local note-taking with Markdown and rich text.</string>
+    <string name="openop_purpose_device">Information about this Android device.</string>
+    <string name="openop_purpose_tools">Practical offline utilities in one place.</string>
+    <string name="openop_purpose_ai">Run compatible AI models locally on this device.</string>
+    <string name="openop_purpose_more">Device and Tools.</string>
+
+    <string name="openop_planned_for_phase">Planned for Phase %1$d</string>
 </resources>

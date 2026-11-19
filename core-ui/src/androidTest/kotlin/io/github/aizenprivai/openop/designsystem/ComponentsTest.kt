@@ -1,5 +1,6 @@
 package io.github.aizenprivai.openop.designsystem
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,6 +20,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -29,8 +31,9 @@ class ComponentsTest {
     @get:Rule
     val composeRule = createComposeRule()
 
+    // Column: components must not overlap, or clicks land on the wrong one.
     private fun show(content: @androidx.compose.runtime.Composable () -> Unit) =
-        composeRule.setContent { OpenopTheme { content() } }
+        composeRule.setContent { OpenopTheme { Column { content() } } }
 
     @Test
     fun emptyStateShowsTitleAndBodyWithoutActions() {
@@ -89,33 +92,50 @@ class ComponentsTest {
         var result = ""
         show {
             ConfirmDialog(
-                title = "Export",
-                text = "Export notes?",
+                title = "Export notes?",
+                text = "Notes are written to the folder you choose.",
                 confirmLabel = "Export",
                 onConfirm = { result = "confirm" },
                 onDismiss = { result = "dismiss" }
             )
         }
+        composeRule.onNodeWithText("Export notes?").assertIsDisplayed()
         composeRule.onNodeWithText("Cancel").performClick()
         assertEquals("dismiss", result)
-        composeRule.onNodeWithText("Export", useUnmergedTree = true).assertIsDisplayed()
+        composeRule.onNodeWithText("Export").performClick()
+        assertEquals("confirm", result)
     }
 
     @Test
     fun destructiveDialogStartsWithFocusOnCancel() {
+        // Focus only applies outside touch mode, as for a keyboard or D-pad user.
+        InstrumentationRegistry.getInstrumentation().setInTouchMode(false)
+        try {
+            showDestructiveDialog()
+            composeRule.onNodeWithText("Cancel").assertIsFocused()
+        } finally {
+            InstrumentationRegistry.getInstrumentation().setInTouchMode(true)
+        }
+    }
+
+    @Test
+    fun destructiveDialogConfirmCallsBack() {
         var confirmed = false
+        showDestructiveDialog(onConfirm = { confirmed = true })
+        composeRule.onNodeWithText("Delete 3 files").performClick()
+        assertEquals(true, confirmed)
+    }
+
+    private fun showDestructiveDialog(onConfirm: () -> Unit = {}) {
         show {
             DestructiveConfirmDialog(
                 title = "Delete files?",
                 text = "This cannot be undone.",
                 confirmLabel = "Delete 3 files",
-                onConfirm = { confirmed = true },
+                onConfirm = onConfirm,
                 onDismiss = {}
             )
         }
-        composeRule.onNodeWithText("Cancel").assertIsFocused()
-        composeRule.onNodeWithText("Delete 3 files").performClick()
-        assertEquals(true, confirmed)
     }
 
     @Test

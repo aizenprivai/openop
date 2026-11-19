@@ -80,6 +80,15 @@ dependencies {
     implementation(libs.androidx.activity.compose)
 
     implementation(project(":core-ui"))
+    implementation(project(":feature:dashboard"))
+    implementation(project(":feature:files"))
+    implementation(project(":feature:notes"))
+    implementation(project(":feature:device"))
+    implementation(project(":feature:tools"))
+    implementation(project(":feature:ai"))
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.compose.material3.adaptive.navigation.suite)
 
     testImplementation(libs.junit4)
 }

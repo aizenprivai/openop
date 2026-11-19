@@ -1,0 +1,33 @@
+OPENOP
+Copyright 2026 The OPENOP authors
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+It includes or depends on the third-party components listed below, each under
+its own licence. This list is maintained during development and is finalised
+before the first release (CLAUDE.md §9.2, Phase 10).
+
+Bundled assets
+--------------
+- Material Symbols icons (Outlined), Google LLC
+  Apache License 2.0 - https://github.com/google/material-design-icons
+  Copied as vector drawables into core-ui/src/main/res/drawable/openop_ic_*.xml
+  (AppCompat-only tint attribute removed).
+
+Compiled into the native library (libopenop_ffi.so)
+--------------------------------------------------
+- UniFFI (uniffi-rs), Mozilla
+  Mozilla Public License 2.0 - https://github.com/mozilla/uniffi-rs
+- thiserror, David Tolnay
+  MIT OR Apache-2.0 - https://github.com/dtolnay/thiserror
+- Their transitive Rust dependencies are pinned in rust/Cargo.lock.
+
+Runtime libraries (Android)
+---------------------------
+- Java Native Access (JNA), used under Apache License 2.0
+  (dual-licensed Apache-2.0 / LGPL-2.1) - https://github.com/java-native-access/jna
+- AndroidX and Jetpack Compose libraries (including Navigation 3 and the
+  Material 3 adaptive navigation suite), The Android Open Source Project
+  Apache License 2.0 - https://developer.android.com/jetpack/androidx
+- Kotlin standard library and kotlinx.coroutines, JetBrains
+  Apache License 2.0 - https://github.com/JetBrains/kotlin
