@@ -1,10 +1,10 @@
 package io.github.aizenprivai.openop.shell
 
-import androidx.compose.ui.test.hasScrollAction
-import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.assertIsSelected
+import androidx.compose.ui.test.hasScrollToIndexAction
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performScrollToNode
+import androidx.compose.ui.test.performScrollToIndex
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import io.github.aizenprivai.openop.MainActivity
 import io.github.aizenprivai.openop.R
@@ -24,18 +24,21 @@ class MainActivityTest {
     fun dashboardFooterShowsTheRustCoreVersion() {
         val info = CoreBridge.coreInfo().getOrThrow()
         val expected = composeRule.activity.getString(R.string.core_status_ok, info.coreVersion, info.buildProfile)
-        composeRule.waitUntil(timeoutMillis = 5_000) {
-            composeRule.onAllNodes(hasScrollAction()).fetchSemanticsNodes().isNotEmpty()
-        }
-        composeRule.onNode(hasScrollAction()).performScrollToNode(hasText(expected))
-        composeRule.waitUntil(timeoutMillis = 5_000) { composeRule.isShowing(expected) }
+        // The footer is the last row; its text changes once the Rust call (off the
+        // main thread) returns, so scroll to the end first, then wait for the text.
+        composeRule.onNode(hasScrollToIndexAction()).performScrollToIndex(DASHBOARD_LAST_ROW)
+        composeRule.waitUntil(timeoutMillis = 10_000) { composeRule.isShowingExactly(expected) }
     }
 
     @Test
     fun navigationSurvivesActivityRecreation() {
         composeRule.onNode(navItem("Notes")).performClick()
         composeRule.activityRule.scenario.recreate()
-        composeRule.waitUntil(timeoutMillis = 5_000) { composeRule.isShowing("Planned for Phase 6") }
-        assertTrue(composeRule.isShowing("Planned for Phase 6"))
+        composeRule.waitUntil(timeoutMillis = 5_000) { composeRule.isShowingExactly(Placeholder.NOTES) }
+        composeRule.onNode(navItem("Notes")).assertIsSelected()
+        assertTrue(composeRule.isShowingExactly(Placeholder.NOTES))
     }
 }
+
+/** Dashboard rows: intro, section header, five shortcuts, footer. */
+private const val DASHBOARD_LAST_ROW = 7

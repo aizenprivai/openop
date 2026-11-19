@@ -29,6 +29,8 @@ class AndroidComposeConventionPlugin : Plugin<Project> {
         dependencies.add("debugImplementation", libs.library("compose-ui-tooling"))
         dependencies.add("androidTestImplementation", bom)
         dependencies.add("androidTestImplementation", libs.library("compose-ui-test-junit4"))
+        // Accessibility Test Framework checks in Compose UI tests (decision P2-D8; API 34+).
+        dependencies.add("androidTestImplementation", libs.library("compose-ui-test-junit4-accessibility"))
         dependencies.add("androidTestImplementation", libs.library("androidx-test-ext-junit"))
         dependencies.add("androidTestImplementation", libs.library("androidx-test-runner"))
         // Pinned over the 3.5.0 that Compose UI Test pulls in (fails on API 37).

@@ -8,6 +8,7 @@ import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -36,11 +37,11 @@ class ShellRailTest {
         showShell()
         tap("Device")
         composeRule.onNode(navItem("Device")).assertIsSelected()
-        assertTrue(composeRule.isShowing("Planned for Phase 4. Information about this Android device."))
+        assertTrue(composeRule.isShowingExactly(Placeholder.DEVICE))
         tap("Tools")
         composeRule.onNode(navItem("Tools")).assertIsSelected()
         composeRule.onNode(navItem("Device")).assertIsNotSelected()
-        assertTrue(composeRule.isShowing("Planned for Phase 8"))
+        assertTrue(composeRule.isShowingExactly(Placeholder.TOOLS))
     }
 
     @Test
@@ -49,16 +50,17 @@ class ShellRailTest {
         tap("Device")
         tap("Device")
         composeRule.onNode(navItem("Device")).assertIsSelected()
-        assertTrue(composeRule.isShowing("Information about this Android device."))
+        assertTrue(composeRule.isShowingExactly(Placeholder.DEVICE))
     }
 
     @Test
     fun backFromDeviceShowsTheMoreScreenThenDashboard() {
         showShell()
         tap("Device")
-        composeRule.runOnUiThread { composeRule.activity.onBackPressedDispatcher.onBackPressed() }
+        composeRule.pressBack()
+        assertFalse(composeRule.isShowingExactly(Placeholder.DEVICE))
         assertTrue("More screen lists Tools", composeRule.isShowing("Planned for Phase 8"))
-        composeRule.runOnUiThread { composeRule.activity.onBackPressedDispatcher.onBackPressed() }
+        composeRule.pressBack()
         composeRule.onNode(navItem("Dashboard")).assertIsSelected()
     }
 }

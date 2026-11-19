@@ -23,6 +23,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import io.github.aizenprivai.openop.designsystem.ConfirmDialog
 import io.github.aizenprivai.openop.designsystem.DestructiveButton
@@ -65,7 +67,11 @@ private fun Catalog() {
             title = "Component catalogue",
             actions = {
                 Text(if (dark) "Dark" else "Light", modifier = Modifier.padding(end = Spacing.s))
-                Switch(checked = dark, onCheckedChange = { dark = it })
+                Switch(
+                    checked = dark,
+                    onCheckedChange = { dark = it },
+                    modifier = Modifier.semantics { contentDescription = "Dark theme" }
+                )
             }
         ) { padding ->
             Column(

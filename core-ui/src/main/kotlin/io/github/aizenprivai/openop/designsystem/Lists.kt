@@ -9,6 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 
@@ -24,7 +25,7 @@ fun ListRow(
 ) {
     ListItem(
         headlineContent = { Text(headline) },
-        modifier = if (onClick != null) modifier.clickable(onClick = onClick) else modifier,
+        modifier = if (onClick != null) modifier.clickable(role = Role.Button, onClick = onClick) else modifier,
         supportingContent = supporting?.let { { Text(it) } },
         leadingContent = icon?.let { { Icon(it, contentDescription = null) } },
         trailingContent = trailing

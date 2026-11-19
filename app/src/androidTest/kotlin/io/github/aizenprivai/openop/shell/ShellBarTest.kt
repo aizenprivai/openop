@@ -27,7 +27,7 @@ class ShellBarTest {
 
     private fun tap(label: String) = composeRule.onNode(navItem(label)).performClick()
 
-    private fun back() = composeRule.runOnUiThread { composeRule.activity.onBackPressedDispatcher.onBackPressed() }
+    private fun back() = composeRule.pressBack()
 
     @Test
     fun barShowsTheFiveApprovedItemsInOrder() {
@@ -39,10 +39,14 @@ class ShellBarTest {
     @Test
     fun everyBarItemOpensItsPlaceholder() {
         showShell()
-        listOf("Files" to 5, "Notes" to 6, "AI" to 7).forEach { (label, phase) ->
+        listOf(
+            "Files" to Placeholder.FILES,
+            "Notes" to Placeholder.NOTES,
+            "AI" to Placeholder.AI
+        ).forEach { (label, text) ->
             tap(label)
             composeRule.onNode(navItem(label)).assertIsSelected()
-            assertTrue("$label placeholder", composeRule.isShowing("Planned for Phase $phase"))
+            assertTrue("$label placeholder", composeRule.isShowingExactly(text))
         }
     }
 
@@ -60,10 +64,11 @@ class ShellBarTest {
         showShell()
         tap("More")
         composeRule.onNode(hasText("Device") and nonNavClickable).performClick()
-        assertTrue(composeRule.isShowing("Planned for Phase 4. Information about this Android device."))
+        assertTrue(composeRule.isShowingExactly(Placeholder.DEVICE))
         back()
+        assertFalse(composeRule.isShowingExactly(Placeholder.DEVICE))
         composeRule.onNode(hasText("Tools") and nonNavClickable).performClick()
-        assertTrue(composeRule.isShowing("Planned for Phase 8"))
+        assertTrue(composeRule.isShowingExactly(Placeholder.TOOLS))
     }
 
     @Test
@@ -83,8 +88,8 @@ class ShellBarTest {
         tap("More")
         composeRule.onNode(hasText("Device") and nonNavClickable).performClick()
         tap("More")
-        assertTrue(composeRule.isShowing("Tools"))
-        assertFalse(composeRule.isShowing("Information about this Android device."))
+        composeRule.onNode(hasText("Tools") and nonNavClickable).assertExists()
+        assertFalse(composeRule.isShowingExactly(Placeholder.DEVICE))
     }
 
     @Test
@@ -93,10 +98,10 @@ class ShellBarTest {
         tap("More")
         composeRule.onNode(hasText("Device") and nonNavClickable).performClick()
         tap("Files")
-        assertTrue(composeRule.isShowing("Planned for Phase 5"))
+        assertTrue(composeRule.isShowingExactly(Placeholder.FILES))
         // Coming back to More shows Device again; it was not reset.
         composeRule.onNode(navItem("More")).performClick()
-        assertTrue(composeRule.isShowing("Information about this Android device."))
+        assertTrue(composeRule.isShowingExactly(Placeholder.DEVICE))
     }
 
     @Test
@@ -104,7 +109,7 @@ class ShellBarTest {
         showShell()
         composeRule.onNode(hasText("Device") and nonNavClickable).performClick()
         composeRule.onNode(navItem("More")).assertIsSelected()
-        assertTrue(composeRule.isShowing("Information about this Android device."))
+        assertTrue(composeRule.isShowingExactly(Placeholder.DEVICE))
     }
 
     @Test
@@ -118,6 +123,7 @@ class ShellBarTest {
         composeRule.onNode(hasText("Tools") and nonNavClickable).performClick()
         restoration.emulateSavedInstanceStateRestore()
         composeRule.onNode(navItem("More")).assertIsSelected()
-        assertTrue(composeRule.isShowing("Planned for Phase 8"))
+        // [More, Tools] restored, not just [More]: the Tools screen itself is shown.
+        assertTrue(composeRule.isShowingExactly(Placeholder.TOOLS))
     }
 }
