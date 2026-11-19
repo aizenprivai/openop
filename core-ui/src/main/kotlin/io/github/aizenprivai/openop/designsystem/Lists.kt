@@ -32,13 +32,17 @@ fun ListRow(
     )
 }
 
-/** A heading above a group of rows or cards; announced as a heading by screen readers. */
+/**
+ * A heading above a group of rows or cards; announced as a heading by screen
+ * readers. It adds vertical spacing only, so it lines up with its container's
+ * content; inside full-width lists, pass `Modifier.padding(horizontal = Spacing.m)`.
+ */
 @Composable
 fun SectionHeader(text: String, modifier: Modifier = Modifier) {
     Text(
         text = text,
         style = MaterialTheme.typography.titleSmall,
         color = MaterialTheme.colorScheme.primary,
-        modifier = modifier.padding(horizontal = Spacing.m, vertical = Spacing.s).semantics { heading() }
+        modifier = modifier.padding(vertical = Spacing.s).semantics { heading() }
     )
 }

@@ -2,6 +2,7 @@ package io.github.aizenprivai.openop.feature.dashboard
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -31,7 +32,7 @@ private val Shortcuts =
 fun DashboardScreen(onOpen: (Destination) -> Unit, footer: String?, modifier: Modifier = Modifier) {
     ScreenScaffold(title = stringResource(Destination.Dashboard.visuals.label), modifier = modifier) { padding ->
         LazyColumn(
-            modifier = Modifier.padding(padding),
+            modifier = Modifier.fillMaxSize().padding(padding),
             contentPadding = PaddingValues(Spacing.m),
             verticalArrangement = Arrangement.spacedBy(Spacing.s)
         ) {
